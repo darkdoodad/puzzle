@@ -1,362 +1,112 @@
+<!--
+
+Learn how to code this game step-by-step on YouTube:
+
+https://www.youtube.com/watch?v=2q5EufbUEQk
+
+Follow me on 𝕏 for more: https://twitter.com/HunorBorbely
+
+-->
+
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>CAP! Puzzle</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Playwrite+IN:wght@100..400&display=swap');
-
-    body {
-        width: 100vw;
-        height: 100vh;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        overflow-x: hidden;
-        background-color: rgb(14, 14, 14);
-
-        transition: all 1s;
-        font-family: "Playwrite IN", serif;
-        font-optical-sizing: auto;
-    }
-
-    #container {
-        position: relative;
-        width: fit-content;
-        height: fit-content;
-
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        border: 6px double rgb(255, 145, 0);
-    }
-
-    #title {
-        color: white;
-        transform: rotateZ(-90deg);
-        
-        margin-left: -20%;
-        margin-right: -15%;
-        
-        width: 40%;
-        height: 15%;
-
-        display: flex;
-        justify-content: center;
-        align-items: end;
-        font-size: 16px;
-    }
-
-    @media (max-width: 1200px) {
-        #title {
-            margin-right: -12%;
-            font-size: 14px;
-        }
-    }
-
-    @media (max-width: 1000px) {
-        #title {
-            margin-right: -12%;
-            font-size: 12px;
-        }
-    }
-
-    @media (max-width: 800px) {
-        #title {
-            margin-right: -10%;
-            font-size: 10px;
-        }
-    }
-
-    @media (max-width: 500px) {
-        #title {
-            margin-right: -10%;
-            font-size: 8px;
-        }
-    }
-
-
-    .piece {
-        width: 15vh;
-        aspect-ratio: 1 / 1;
-        background-size: 100%;
-
-        transition: 1s all;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .top {
-        width: 80%;
-        height: 15%;
-        top: 0%;
-
-        background-image: url("https://raw.githubusercontent.com/RicardoYare/imagenes/refs/heads/main/print2/up.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 25%;
-    }
-
-    .botm {
-        width: 80%;
-        height: 15%;
-        bottom: 0%;
-
-        background-image: url("https://raw.githubusercontent.com/RicardoYare/imagenes/refs/heads/main/print2/down.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 25%;
-    }
-
-    .left {
-        width: 15%;
-        height: 80%;
-        left: 0%;
-
-        background-image: url("https://raw.githubusercontent.com/RicardoYare/imagenes/refs/heads/main/print2/left.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 150%;
-    }
-
-    .right {
-        width: 15%;
-        height: 80%;
-        right: 0%;
-
-        background-image: url("https://raw.githubusercontent.com/RicardoYare/imagenes/refs/heads/main/print2/right.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 150%;
-    }
-
-    .side {
-        transition: all 0.5s;
-        position: absolute;
-        background-color: white;
-        opacity: 0%;
-    }
-
-    .side:hover {
-        cursor: pointer;
-        opacity: 65%;
-    }
-
-    .center {
-        width: 40%;
-        height: 40%;
-
-        transition: all 0.5s;
-
-        background-image: url("https://raw.githubusercontent.com/RicardoYare/imagenes/refs/heads/main/print2/rotate.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 80%;
-
-        background-color: white;
-        opacity: 0%;
-        border-radius: 50%;
-    }
-
-    .center:hover {
-        opacity: 65%;
-        cursor: pointer;
-    }
-
-    #rotateBody {
-        margin-right: 2%;
-        animation: blinkBack 2s infinite;
-        transform: scale(1.2);
-        position: relative;
-    }
-
-    #rotateBody::before{
-        content: "(click me)";
-        position: absolute;
-        font-size: 0.4em;
-        bottom: -20%;
-        left: 22%;
-    }
-
-    #rotateBody:hover {
-        cursor: pointer;
-    }
-
-    @keyframes blinkBack {
-        0% {
-            color: white;
-        }
-        50% {
-            color: rgb(255, 145, 0);
-        }
-        100% {
-            color: white;
-        }
-    }
-
-</style>
-
-</head>
-
-<body>
-
-<div id="title"><span id="rotateBody">Rotate </span>& Spin The Pieces To Solve The Puzzle</div>
-<div id="container"></div>
-
-<script>
-
-    //
-    // Prepare the pieces
-    //
-    for (let index = 0; index < 36; index++) {
-
-        let piece = document.createElement("div");
-        piece.classList.add([index], "piece");
-        piece.style.backgroundImage = `url(https://raw.githubusercontent.com/RicardoYare/imagenes/refs/heads/main/print2/${index}.png)`;
-
-        let top = document.createElement("div");
-        top.classList.add("top", "side")
-        piece.appendChild(top);
-
-        let right = document.createElement("div");
-        right.classList.add("right", "side")
-        piece.appendChild(right);
-
-        let botm = document.createElement("div");
-        botm.classList.add("botm", "side")
-        piece.appendChild(botm);
-
-        let left = document.createElement("div");
-        left.classList.add("left", "side")
-        piece.appendChild(left);
-
-        let center = document.createElement("div");
-        center.classList.add("center")
-        piece.appendChild(center);
-        document.getElementById("container").appendChild(piece)
-    }
-
-    let arr = [];        
-
-    document.querySelectorAll(".side").forEach(side => {
-
-        side.addEventListener("click", (e) => {
-            
-            let numP = e.target.parentNode.classList[0];
-
-            if (side.classList.contains("left")) {
-
-                if (arr[numP].mode == "vertical") {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x}deg) rotateY(${arr[numP].y + 180}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].y = arr[numP].y + 180;
-
-                } else {
-                    
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x + 180}deg) rotateY(${arr[numP].y}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].x = arr[numP].x + 180;
-                }
-            }
-
-            if (side.classList.contains("right")) {
-
-                if (arr[numP].mode == "vertical") {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x}deg) rotateY(${arr[numP].y - 180}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].y = arr[numP].y - 180;
-
-                } else {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x - 180}deg) rotateY(${arr[numP].y}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].x = arr[numP].x - 180;
-                }
-            }
-
-            if (side.classList.contains("top")) {
-
-                if (arr[numP].mode == "vertical") {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x + 180}deg) rotateY(${arr[numP].y}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].x = arr[numP].x + 180;
-
-
-                } else {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x}deg) rotateY(${arr[numP].y + 180}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].y = arr[numP].y + 180;
-
-                }
-            }
-
-            if (side.classList.contains("botm")) {
-
-                if (arr[numP].mode == "vertical") {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x - 180}deg) rotateY(${arr[numP].y}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].x = arr[numP].x - 180;
-
-
-                } else {
-
-                    e.target.parentElement.style.transform = `rotateX(${arr[numP].x}deg) rotateY(${arr[numP].y - 180}deg) rotateZ(${arr[numP].z}deg)`;
-                    arr[numP].y = arr[numP].y - 180;
-
-                }
-            }
-        })
-    })
-
-    document.querySelectorAll(".center").forEach(center => {
-
-        center.addEventListener("click", (e) => {
-
-            let numP = e.target.parentNode.classList[0];
-
-            e.target.parentElement.style.transform = `rotateX(${arr[numP].x}deg) rotateY(${arr[numP].y}deg) rotateZ(${arr[numP].z + 90}deg)`;
-            arr[numP].z = arr[numP].z + 90;
-
-            arr[numP].mode == "vertical" ? arr[numP].mode = "horiz" : arr[numP].mode = "vertical";
-
-        })
-    })
-
-    let bodyZ = 0;
-
-    document.getElementById("rotateBody").addEventListener("click", (e) => {
-
-        bodyZ = bodyZ + 90;
-        document.body.style.transform = `rotateZ(${bodyZ}deg)`;
-    })
-
-
-    function randomInitPosition() {
-
-        document.querySelectorAll(".piece").forEach( piece =>{
-
-            let randomX = (Math.round(Math.random() * (4 - (-4)) + (-4))) * 180;
-            let randomY = (Math.round(Math.random() * (4 - (-4)) + (-4))) * 180;
-            let randomZ = (Math.round(Math.random() * (4 - (-4)) + (-4))) * 90
-
-            piece.style.transform = `rotateX(${randomX}deg) rotateY(${randomY}deg) rotateZ(${randomZ}deg)`;      
-            arr.push({ y: randomY, x: randomX, z: randomZ, mode: (randomZ % 180 == 0) ? "vertical" : "horiz"})
-
-        })
-    }
-
-    setTimeout(() => {
-        randomInitPosition();
-    }, 1000);
-
-</script>
-
-</body>
-
+  <head>
+    <meta charset="utf-8" />
+    <title>Gorillas</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+
+    <svg width="200" height="250" id="windmill">
+      <defs>
+        <path id="arm" d="M -7 -20 C -7 -10 7 -10 7 -20 L 2 -80 L -2 -80" />
+      </defs>
+      <g transform="translate(100, 100)">
+        <g id="windmill-head">
+          <circle r="8"></circle>
+          <use href="#arm" />
+          <use href="#arm" transform="rotate(+120)" />
+          <use href="#arm" transform="rotate(-120)" />
+        </g>
+      </g>
+      <path
+        transform="translate(100, 0)"
+        d="M -7 250 L 7 250 L 3 115 L -3 115"
+      ></path>
+    </svg>
+
+    <div id="wind-info">Wind Speed: <span id="wind-speed">0</span></div>
+
+    <div id="info-left">
+      <h3><span class="name">Player</span></h3>
+      <p>Angle: <span class="angle">0</span>°</p>
+      <p>Velocity: <span class="velocity">0</span></p>
+    </div>
+
+    <div id="info-right">
+      <h3><span class="name">Computer</span></h3>
+      <p>Angle: <span class="angle">0</span>°</p>
+      <p>Velocity: <span class="velocity">0</span></p>
+    </div>
+
+    <div id="instructions">
+      <h3 id="game-mode">Player vs. Computer</h3>
+      <h1>Drag the bomb to aim!</h1>
+    </div>
+
+    <div id="bomb-grab-area"></div>
+
+    <div id="congratulations">
+      <h1><span id="winner">?</span> won!</h1>
+      <div class="dropdown">
+        <button class="dropbtn">New Game</button>
+        <div class="dropdown-content">
+          <a href="#" class="single-player">Single Player</a>
+          <a href="#" class="two-players">Two-Player</a>
+          <a href="#" class="auto-play">Autoplay</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings">
+      <div class="dropdown">
+        <button class="dropbtn">New Game</button>
+        <div class="dropdown-content">
+          <a href="#" class="single-player">Single Player</a>
+          <a href="#" class="two-players">Two-Players</a>
+          <a href="#" class="auto-play">Autoplay</a>
+        </div>
+      </div>
+      <button id="color-mode">Dark Mode</button>
+    </div>
+
+    <button id="fullscreen" onclick="toggleFullscreen()">
+      <svg width="30" height="30">
+        <path
+          id="enter-fullscreen"
+          stroke="white"
+          stroke-width="3"
+          fill="none"
+          d="
+            M 10, 2 L 2,2 L 2, 10
+            M 20, 2 L 28,2 L 28, 10
+            M 28, 20 L 28,28 L 20, 28
+            M 10, 28 L 2,28 L 2, 20"
+        />
+        <path
+          id="exit-fullscreen"
+          stroke="transparent"
+          stroke-width="3"
+          fill="none"
+          d="
+            M 10, 2 L 10,10 L 2, 10
+            M 20, 2 L 20,10 L 28, 10
+            M 28, 20 L 20,20 L 20, 28
+            M 10, 28 L 10,20 L 2, 20"
+        />
+      </svg>
+    </button>
+  </body>
 </html>
